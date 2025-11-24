@@ -21,19 +21,19 @@ public class UserLoginTest {
         user.setName(faker.name().fullName());
         user.setPassword(faker.internet().password(8, 16));
         accessToken = null;
-    }
 
-    @Test
-    @DisplayName("Успешная авторизация")
-    @Description("Успешная авторизация - Ожидание 200")
-    public void loginSuccessUserExists() {
         Response createResponse = UserMethods.createUser(user);
         createResponse.then()
                 .statusCode(200)
                 .body("success", equalTo(true));
 
         accessToken = createResponse.then().extract().path("accessToken").toString();
+    }
 
+    @Test
+    @DisplayName("Успешная авторизация")
+    @Description("Успешная авторизация - Ожидание 200")
+    public void loginSuccessUserExists() {
         Response loginResponse = UserMethods.loginUser(user);
 
         loginResponse.then().log().all()
@@ -99,13 +99,6 @@ public class UserLoginTest {
     @DisplayName("Авторизация с неверным паролем")
     @Description("Авторизация с неверным паролем - Ожидание 401")
     public void loginFailurePasswordIncorrect() {
-        Response createResponse = UserMethods.createUser(user);
-        createResponse.then()
-                .statusCode(200)
-                .body("success", equalTo(true));
-
-        accessToken = createResponse.then().extract().path("accessToken").toString();
-
         User loginUserObj = new User();
         loginUserObj.setEmail(user.getEmail());
         loginUserObj.setPassword(user.getPassword() + "_wrong");
